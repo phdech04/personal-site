@@ -177,8 +177,9 @@ main {
 }
 
 .hero-title {
-  /* Same face as "It’s always mathematical" (Fraunces), but upright. */
-  font-family: var(--font-display), Georgia, serif;
+  /* Arcturus — not a web font, so it renders where installed (e.g. your Mac)
+     and falls back to Fraunces elsewhere. */
+  font-family: 'Arcturus', var(--font-display), Georgia, serif;
   font-style: normal;
   font-weight: 500;
   font-size: clamp(3rem, 11vw, 8.5rem);
