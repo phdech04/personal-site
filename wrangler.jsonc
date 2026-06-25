@@ -6,5 +6,11 @@
   "compatibility_date": "2026-06-25",
   "assets": {
     "directory": "./out"
-  }
+  },
+  // Attach the purchased domain on deploy (creates the proxied DNS records too,
+  // since the zone is in this Cloudflare account).
+  "routes": [
+    { "pattern": "pdchaba.com", "custom_domain": true },
+    { "pattern": "www.pdchaba.com", "custom_domain": true }
+  ]
 }
