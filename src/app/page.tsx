@@ -197,8 +197,8 @@ export default function Home() {
               very different academic cultures is what makes the thinking richer.
             </p>
             <p>
-              The curiosity hasn&rsquo;t changed since I first got hooked on the
-              Fibonacci sequence — only the toolkit has. These days I work where
+              The curiosity hasn&rsquo;t changed since I first got hooked on
+              coding — only the toolkit has. These days I work where
               quantitative finance meets machine learning, and I write research
               code with the same discipline I picked up shipping software to real
               users.
