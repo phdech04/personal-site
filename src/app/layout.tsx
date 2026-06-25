@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
+import {
+  Fraunces,
+  Hanken_Grotesk,
+  JetBrains_Mono,
+  EB_Garamond,
+} from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
@@ -9,6 +14,13 @@ const fraunces = Fraunces({
   display: 'swap',
   axes: ['opsz', 'SOFT', 'WONK'],
   variable: '--font-display',
+})
+
+// EB Garamond — classic old-style serif for the hero name.
+const ebGaramond = EB_Garamond({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-headline',
 })
 
 const hanken = Hanken_Grotesk({
@@ -44,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${ebGaramond.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
