@@ -182,6 +182,8 @@ main {
      humanist sans elsewhere. */
   font-family: 'Optima', 'Optima Nova', Candara, 'Gill Sans', 'Gill Sans MT',
     var(--font-display), sans-serif;
+  /* Optima as a system font only has real Regular (400) and Bold (700) weights;
+     in-between values like 500/600 render inconsistently — stick to 400. */
   font-weight: 400;
   font-size: clamp(3rem, 11vw, 8.5rem);
   line-height: 0.98;
