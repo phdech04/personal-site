@@ -3,7 +3,7 @@ import {
   Fraunces,
   Hanken_Grotesk,
   JetBrains_Mono,
-  EB_Garamond,
+  Poppins,
 } from 'next/font/google'
 import './globals.css'
 
@@ -16,10 +16,11 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// EB Garamond — classic old-style serif for the hero name.
-const ebGaramond = EB_Garamond({
+// Poppins — geometric sans-serif for the hero name.
+const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
   variable: '--font-headline',
 })
 
@@ -56,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${ebGaramond.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${poppins.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
