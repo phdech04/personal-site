@@ -178,10 +178,10 @@ main {
 
 .hero-title {
   font-family: var(--font-headline), Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(2.8rem, 10vw, 7.5rem);
-  line-height: 1.04;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 8.5vw, 6.5rem);
+  line-height: 1.06;
+  letter-spacing: 0;
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   perspective: 600px;

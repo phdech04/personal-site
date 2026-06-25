@@ -1,10 +1,5 @@
 import type { Metadata } from 'next'
-import {
-  Fraunces,
-  Hanken_Grotesk,
-  JetBrains_Mono,
-  Abril_Fatface,
-} from 'next/font/google'
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono, Cinzel } from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
@@ -16,11 +11,10 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Abril Fatface — bold high-contrast Didone display serif for the hero name.
-const abril = Abril_Fatface({
+// Cinzel — classical Roman-inscription serif for the hero name.
+const cinzel = Cinzel({
   subsets: ['latin'],
   display: 'swap',
-  weight: '400',
   variable: '--font-headline',
 })
 
@@ -57,7 +51,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${abril.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${cinzel.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
