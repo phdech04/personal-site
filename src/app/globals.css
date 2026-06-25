@@ -177,11 +177,13 @@ main {
 }
 
 .hero-title {
-  font-family: var(--font-script), 'Segoe Script', cursive;
+  /* Santrio — modern sans-serif. Not a web font, so it renders where installed
+     (e.g. your Mac) and falls back to a modern sans elsewhere. */
+  font-family: 'Santrio', var(--font-body), system-ui, sans-serif;
   font-weight: 600;
-  font-size: clamp(3.4rem, 12.5vw, 9.5rem);
-  line-height: 1.02;
-  letter-spacing: 0;
+  font-size: clamp(3rem, 11vw, 8.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   perspective: 600px;
