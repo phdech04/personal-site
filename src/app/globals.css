@@ -146,33 +146,86 @@ main {
 }
 
 .hero-title {
-  font-family: var(--font-headline), system-ui, sans-serif;
-  font-weight: 700;
+  font-family: var(--font-headline), Georgia, serif;
+  font-weight: 600;
   font-size: clamp(3rem, 11vw, 8.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.035em;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
   overflow-wrap: break-word;
-  background: linear-gradient(
-    180deg,
-    #fff 0%,
-    var(--ink) 55%,
-    var(--ink-faint) 120%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
+  perspective: 600px;
 }
 
 .title-line {
   display: block;
 }
 
-/* The transient math symbol shown just before a letter resolves */
+/* Gradient lives on each letter so entrance transforms always render */
+.title-line > span {
+  display: inline-block;
+  background: linear-gradient(180deg, #fff 0%, var(--ink) 72%, var(--ink-faint) 118%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* The transient math symbol / scrambling digit shown before a letter resolves */
 .ch-symbol {
+  background: none;
   color: var(--accent-2);
   -webkit-text-fill-color: var(--accent-2);
-  opacity: 0.85;
+  opacity: 0.9;
+}
+
+/* Per-letter entrance effects for Den & Chaba */
+.anim-swing {
+  animation: swingIn 0.6s var(--ease) both;
+  transform-origin: 50% 0;
+}
+.anim-spawn {
+  animation: spawnIn 0.5s var(--ease) both;
+}
+.anim-slide {
+  animation: slideIn 0.5s var(--ease) both;
+}
+
+@keyframes swingIn {
+  0% {
+    transform: rotate(38deg) translateY(-0.15em);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(0) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spawnIn {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(0.7em);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .lede {

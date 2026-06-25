@@ -3,7 +3,7 @@ import {
   Fraunces,
   Hanken_Grotesk,
   JetBrains_Mono,
-  Bricolage_Grotesque,
+  Playfair_Display,
 } from 'next/font/google'
 import './globals.css'
 
@@ -14,8 +14,8 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Distinctive display face used only for the big hero name.
-const bricolage = Bricolage_Grotesque({
+// Elegant high-contrast serif used for the big hero name.
+const playfair = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-headline',
@@ -54,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${bricolage.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${playfair.variable}`}
     >
       <body>{children}</body>
     </html>

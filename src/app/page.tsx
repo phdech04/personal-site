@@ -10,28 +10,38 @@ const links = {
 
 const NAME = 'Phemo Den Chaba'
 const GLYPHS = '×÷∑∫π∂√≈≠=λΣ'
+const DIGITS = '0123456789'
 
-// Typewriter timing (in animation frames, ~60fps). Tune freely:
-const SYMBOL_FRAMES = 11 // how long each math symbol shows before flipping to its letter
-const PER_CHAR = 10 // frames between successive letters within a word
-const WORD_OFFSET = 4 // small per-word stagger so words don't resolve in perfect lockstep
+// Timing (animation frames, ~60fps). Tune freely:
+const SYMBOL_FRAMES = 12 // how long the symbol / number phase lasts before the letter
+const PER_CHAR = 9 // frames between successive letters within a word
+const WORD_OFFSET = 5 // small per-word stagger so words don't resolve in lockstep
 
-// Per-character schedule. Every WORD starts at once and types in parallel —
+// Entrance effects for the letters of Den & Chaba (Phemo always resolves out
+// of math symbols). A varied, deterministic mix so it feels lively.
+const VARIANTS = ['number', 'swing', 'spawn', 'slide']
+
+// Per-character schedule. Every WORD starts at once and animates in parallel —
 // a char's timing depends on its position within its word, not the whole name.
 const SCHED = (() => {
   let wordPos = 0
   let wordIndex = 0
-  const arr = NAME.split('').map((c) => {
+  const arr = NAME.split('').map((c, i) => {
     if (c === ' ') {
       wordPos = 0
       wordIndex += 1
-      return { start: 0, lock: 0, space: true }
+      return { start: 0, done: 0, space: true, effect: 'space' }
     }
     const start = wordIndex * WORD_OFFSET + wordPos * PER_CHAR
+    const effect =
+      wordIndex === 0 ? 'symbols' : VARIANTS[(i * 3 + wordPos) % VARIANTS.length]
     wordPos += 1
-    return { start, lock: start + SYMBOL_FRAMES, space: false }
+    // 'symbols' and 'number' show a glyph for a while; the rest appear at once.
+    const done =
+      effect === 'symbols' || effect === 'number' ? start + SYMBOL_FRAMES : start
+    return { start, done, space: false, effect }
   })
-  const end = Math.max(...arr.map((s) => s.lock)) + 2
+  const end = Math.max(...arr.map((s) => s.done)) + 2
   return { arr, end }
 })()
 
@@ -132,6 +142,7 @@ export default function Home() {
     const c = NAME[i]
     if (c === ' ') return <span key={i}>{' '}</span>
     const s = SCHED.arr[i]
+    // Before its turn: reserve width but stay invisible.
     if (frame < s.start) {
       return (
         <span key={i} style={{ visibility: 'hidden' }}>
@@ -139,10 +150,23 @@ export default function Home() {
         </span>
       )
     }
-    if (frame < s.lock) {
+    // Glyph phase: math symbols (Phemo) or scrambling digits (number effect).
+    if (frame < s.done) {
+      const glyph =
+        s.effect === 'number'
+          ? DIGITS[(frame + i) % DIGITS.length]
+          : GLYPHS[i % GLYPHS.length]
       return (
         <span key={i} className="ch-symbol">
-          {GLYPHS[i % GLYPHS.length]}
+          {glyph}
+        </span>
+      )
+    }
+    // Resolved letter — swing / spawn / slide get a one-shot entrance.
+    if (s.effect === 'swing' || s.effect === 'spawn' || s.effect === 'slide') {
+      return (
+        <span key={i} className={`anim-${s.effect}`}>
+          {c}
         </span>
       )
     }
