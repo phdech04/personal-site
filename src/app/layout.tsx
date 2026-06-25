@@ -22,12 +22,12 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Den Chaba — Mathematics & Quantitative Finance',
+  title: 'Phemo Den Chaba — Mathematics & Quantitative Finance',
   description:
-    'Den Chaba — Mathematics student at the University of Waterloo working in quantitative finance and machine learning. Builder of trading platforms, factor-research engines, and AI systems.',
+    'Phemo Den Chaba — Mathematics student at the University of Waterloo working in quantitative finance and machine learning. Builder of trading platforms, factor-research engines, and AI systems.',
   metadataBase: new URL('https://pdchaba.com'),
   openGraph: {
-    title: 'Den Chaba — Mathematics & Quantitative Finance',
+    title: 'Phemo Den Chaba — Mathematics & Quantitative Finance',
     description:
       'Mathematics @ Waterloo · quantitative finance · machine learning. Selected projects and experience.',
     type: 'website',

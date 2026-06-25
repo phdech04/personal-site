@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 const links = {
   github: 'https://github.com/phdech04',
@@ -8,26 +8,24 @@ const links = {
   email: 'mailto:dchaba@uwaterloo.ca',
 }
 
+const NAME = 'Phemo Den Chaba'
+const GLYPHS = '×÷∑∫π∂√%+−=≈≠∞λΣ'
+
 const experience = [
   {
     role: 'Software Engineering Intern',
-    company: 'Bitquark, Inc',
-    place: 'San Francisco',
+    company: 'Bitquark',
     when: 'Jan 2026 — Present',
-    points: [
-      'Leading frontend of a macOS productivity app from first commit to launch — a translucent overlay panel in Flutter with native Swift integration for window management and system-level interactions.',
-      'Shipped calendar, contacts, and meeting-location features: event resizing, Google Calendar / OAuth, real-time routing, and Wi-Fi–based location.',
-    ],
+    summary:
+      'Building the frontend of a macOS productivity app from first commit to launch.',
+    tags: ['Flutter', 'Swift', 'macOS', 'OAuth'],
   },
   {
     role: 'Software Engineering Intern',
-    company: 'Gensona, Inc',
-    place: 'San Francisco',
+    company: 'Gensona',
     when: 'Sep 2025 — Jan 2026',
-    points: [
-      'Core engineer on a 4-person team building an AI voice-companion platform across web (Next.js, React) and native iOS (SwiftUI) — 581+ commits over four months.',
-      'Owned the data layer end-to-end on Supabase PostgreSQL: schema design, migrations for rapid iteration, and the user-facing management UI.',
-    ],
+    summary: 'Core engineer on an AI voice companion, shipped across web and iOS.',
+    tags: ['Next.js', 'React', 'SwiftUI', 'Supabase'],
   },
 ]
 
@@ -35,7 +33,7 @@ const projects = [
   {
     name: 'Cross-ISO Power Spread Analyzer',
     blurb:
-      'Institutional-grade spread-trading platform across all 8 North American ISOs. Cointegration testing, Ornstein–Uhlenbeck half-life estimation, HMM regime detection, and LSTM / Transformer forecasting, with a VaR/CVaR Monte Carlo risk engine over 10,000+ paths.',
+      'A quantitative spread-trading platform across all 8 North American power markets — regime detection, ML forecasting, and a Monte Carlo risk engine.',
     tags: ['Python', 'FastAPI', 'PyTorch', 'DuckDB', 'hmmlearn'],
     href: 'https://github.com/phdech04/power-spread-analyzer',
     badge: 'Quant',
@@ -43,7 +41,7 @@ const projects = [
   {
     name: 'Quant Factor Research Platform',
     blurb:
-      'Reproducible pipeline ingesting 2.87M stock-day rows into DuckDB / Parquet, plus an agentic loop (LangGraph + Claude) that reads arXiv papers, extracts factor hypotheses as JSON specs, and writes the pandas code to test them against history.',
+      'An agentic research loop that reads finance papers, extracts factor hypotheses, and writes the code to test them against decades of market history.',
     tags: ['Python', 'LangGraph', 'Anthropic', 'Statsmodels', 'Parquet'],
     href: 'https://github.com/phdech04/quant-factor-research',
     badge: 'Quant',
@@ -51,7 +49,7 @@ const projects = [
   {
     name: 'Teemane — Neural Chess Engine',
     blurb:
-      'A custom ResNet CNN with dual policy/value heads (4,544 move dimensions) trained on 52 GB of super-GM games, paired with Monte Carlo Tree Search for real-time inference. Data pipeline aggregating 5M+ PGN games into a cleaned 3.9 GB corpus.',
+      'A chess engine that learns: a custom ResNet with policy and value heads, trained on millions of grandmaster games and paired with Monte Carlo Tree Search.',
     tags: ['Python', 'PyTorch', 'FastAPI', 'Next.js'],
     href: 'https://github.com/phdech04',
     badge: 'Solo hackathon',
@@ -59,15 +57,15 @@ const projects = [
   {
     name: 'PassePartout — EarSightAI',
     blurb:
-      'A browser-based, audio-first tour guide that narrates location-specific facts in real time. Geospatial routing (OSRM, a TSP solver, OpenStreetMap) feeding an LLM narration pipeline. Built with a team.',
-    tags: ['FastAPI', 'MongoDB', 'React', 'Leaflet', 'LLM/RAG'],
+      'A browser-based, audio-first tour guide that narrates location-specific facts in real time, routing you through a city as it talks.',
+    tags: ['FastAPI', 'MongoDB', 'React', 'Leaflet', 'LLM'],
     href: 'https://github.com/ericnem/PassePartout',
     badge: 'Team hackathon',
   },
   {
     name: 'LLM Database Query Assistant',
     blurb:
-      'Translates natural-language questions into SQL and MongoDB queries with human-readable explanations. Schema-aware and multi-database, served through a FastAPI backend.',
+      'Ask a database questions in plain English and get back SQL or MongoDB queries, with explanations. Schema-aware and multi-database.',
     tags: ['FastAPI', 'PostgreSQL', 'MongoDB', 'LLM'],
     href: 'https://github.com/phdech04/llm-query-assistant',
     badge: null,
@@ -75,40 +73,42 @@ const projects = [
   {
     name: 'Semantic Search API',
     blurb:
-      'End-to-end semantic search over research papers — query a corpus in natural language and retrieve the most relevant documents using deep-learning embeddings rather than keyword matching.',
+      'Search research papers by meaning, not keywords — natural-language queries over a corpus using deep-learning embeddings.',
     tags: ['Python', 'Embeddings', 'FastAPI'],
     href: 'https://github.com/phdech04/semantic-search-api',
     badge: null,
   },
 ]
 
-const achievements = [
-  {
-    title: 'Presidential Award',
-    detail: 'Ranked 1st nationally in Botswana out of 37,629 BGCSE candidates.',
-  },
-]
-
 export default function Home() {
-  const rootRef = useRef<HTMLDivElement>(null)
+  const [name, setName] = useState(NAME)
 
-  // Pointer-following spotlight: write cursor position to CSS variables.
+  // Resolve the name out of cycling mathematical symbols on load.
   useEffect(() => {
-    const el = rootRef.current
-    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setName(NAME)
+      return
+    }
+    const chars = NAME.split('')
+    const settle = chars.map((c, i) => (c === ' ' ? 0 : 16 + i * 5))
+    const end = Math.max(...settle) + 1
     let frame = 0
-    const onMove = (e: PointerEvent) => {
-      cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        el.style.setProperty('--mx', `${e.clientX}px`)
-        el.style.setProperty('--my', `${e.clientY}px`)
-      })
+    let raf = 0
+    const step = () => {
+      frame += 1
+      const out = chars
+        .map((c, i) => {
+          if (c === ' ') return ' '
+          if (frame >= settle[i]) return c
+          return GLYPHS[(frame * 3 + i * 7) % GLYPHS.length]
+        })
+        .join('')
+      setName(out)
+      if (frame < end) raf = requestAnimationFrame(step)
+      else setName(NAME)
     }
-    window.addEventListener('pointermove', onMove)
-    return () => {
-      window.removeEventListener('pointermove', onMove)
-      cancelAnimationFrame(frame)
-    }
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
   }, [])
 
   // Reveal-on-scroll for elements marked [data-reveal].
@@ -134,8 +134,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="page" ref={rootRef}>
-      <div className="spotlight" aria-hidden="true" />
+    <div className="page">
       <div className="grid-overlay" aria-hidden="true" />
       <div className="grain" aria-hidden="true" />
 
@@ -145,18 +144,37 @@ export default function Home() {
           <p className="eyebrow hero-load" style={{ animationDelay: '0.05s' }}>
             <span className="dot" /> Mathematics · Quantitative Finance · ML
           </p>
-          <h1 className="hero-title hero-load" style={{ animationDelay: '0.12s' }}>
-            Den
-            <br />
-            Chaba
+          <h1
+            className="hero-title hero-load"
+            style={{ animationDelay: '0.12s' }}
+            aria-label={NAME}
+          >
+            {(() => {
+              const words = name.split(' ')
+              const lines =
+                words.length > 1
+                  ? [words[0], words.slice(1).join(' ')]
+                  : words
+              return lines.map((line, i) => (
+                <span className="title-line" key={i}>
+                  {line}
+                </span>
+              ))
+            })()}
           </h1>
-          <p className="lede hero-load" style={{ animationDelay: '0.2s' }}>
-            <em>It&rsquo;s always mathematical.</em> I study Mathematical Finance
-            and Applied Mathematics at the University of Waterloo, and I build
-            quantitative-trading platforms, factor-research engines, and AI
-            systems that survive contact with real data.
-          </p>
-          <nav className="hero-links hero-load" style={{ animationDelay: '0.28s' }}>
+
+          <div className="lede hero-load" style={{ animationDelay: '0.22s' }}>
+            <p className="signature">
+              <em>It&rsquo;s always mathematical.</em>
+            </p>
+            <p>
+              I study Mathematical Finance and Applied Mathematics at Waterloo,
+              with a focus on machine learning.
+            </p>
+            <p>I build systems that survive contact with the real world.</p>
+          </div>
+
+          <nav className="hero-links hero-load" style={{ animationDelay: '0.3s' }}>
             <a href={links.github} target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
@@ -179,12 +197,11 @@ export default function Home() {
               very different academic cultures is what makes the thinking richer.
             </p>
             <p>
-              The curiosity has stayed the same since I first marvelled at the
-              Fibonacci sequence; the toolkit has grown. Today that means
-              replicating Fama–French momentum series to a 0.90 Pearson
-              correlation, validating Newey–West standard errors to four decimal
-              places, and writing research code with the same discipline I learned
-              shipping software to real users.
+              The curiosity hasn&rsquo;t changed since I first got hooked on the
+              Fibonacci sequence — only the toolkit has. These days I work where
+              quantitative finance meets machine learning, and I write research
+              code with the same discipline I picked up shipping software to real
+              users.
             </p>
           </div>
         </section>
@@ -198,17 +215,18 @@ export default function Home() {
               <article className="job" key={job.company}>
                 <div className="job-head">
                   <h3>
-                    {job.role}{' '}
-                    <span className="job-company">· {job.company}</span>
+                    {job.role} <span className="job-company">· {job.company}</span>
                   </h3>
                   <span className="job-when">{job.when}</span>
                 </div>
-                <span className="job-place">{job.place}</span>
-                <ul>
-                  {job.points.map((p, i) => (
-                    <li key={i}>{p}</li>
+                <p className="job-summary">{job.summary}</p>
+                <div className="tags">
+                  {job.tags.map((t) => (
+                    <span className="tag" key={t}>
+                      {t}
+                    </span>
                   ))}
-                </ul>
+                </div>
               </article>
             ))}
           </div>
@@ -252,12 +270,12 @@ export default function Home() {
           <span className="section-index">04</span>
           <h2 className="section-title">Recognition</h2>
           <div className="awards">
-            {achievements.map((a) => (
-              <div className="award" key={a.title}>
-                <h3>{a.title}</h3>
-                <p>{a.detail}</p>
-              </div>
-            ))}
+            <div className="award">
+              <h3>Presidential Award</h3>
+              <p>
+                Ranked 1st nationally in Botswana out of 37,629 BGCSE candidates.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -274,7 +292,8 @@ export default function Home() {
             </a>
           </div>
           <p className="footer-fine">
-            Den Chaba · University of Waterloo · It&rsquo;s always mathematical.
+            Phemo Den Chaba · University of Waterloo · It&rsquo;s always
+            mathematical.
           </p>
         </footer>
       </main>

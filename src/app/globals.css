@@ -19,9 +19,6 @@
 
   --maxw: 1080px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-  --mx: 50vw;
-  --my: -20vh;
 }
 
 * {
@@ -62,22 +59,7 @@ a {
   isolation: isolate;
 }
 
-/* Pointer-following spotlight */
-.spotlight {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: radial-gradient(
-    520px circle at var(--mx) var(--my),
-    rgba(var(--glow), 0.16),
-    rgba(79, 214, 200, 0.05) 38%,
-    transparent 62%
-  );
-  transition: background 0.18s var(--ease);
-}
-
-/* Faint mathematical grid */
+/* Faint mathematical grid — static, anchored top, fading down */
 .grid-overlay {
   position: fixed;
   inset: -2px;
@@ -88,18 +70,38 @@ a {
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: 64px 64px;
   -webkit-mask-image: radial-gradient(
-    circle at var(--mx) var(--my),
-    #000 0,
-    rgba(0, 0, 0, 0.35) 30%,
-    transparent 60%
+    115% 75% at 50% -8%,
+    #000 0%,
+    rgba(0, 0, 0, 0.4) 42%,
+    transparent 70%
   );
   mask-image: radial-gradient(
-    circle at var(--mx) var(--my),
-    #000 0,
-    rgba(0, 0, 0, 0.35) 30%,
-    transparent 60%
+    115% 75% at 50% -8%,
+    #000 0%,
+    rgba(0, 0, 0, 0.4) 42%,
+    transparent 70%
   );
-  opacity: 0.9;
+  opacity: 0.7;
+}
+
+/* A soft, static glow behind the hero (replaces the cursor spotlight) */
+.page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      640px circle at 18% 8%,
+      rgba(var(--glow), 0.14),
+      transparent 60%
+    ),
+    radial-gradient(
+      560px circle at 88% 0%,
+      rgba(79, 214, 200, 0.08),
+      transparent 55%
+    );
 }
 
 /* Film grain */
@@ -173,20 +175,33 @@ main {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+}
+
+.title-line {
+  display: block;
 }
 
 .lede {
-  max-width: 46ch;
-  font-size: clamp(1.05rem, 1rem + 0.45vw, 1.35rem);
-  line-height: 1.6;
+  margin-top: 1.5rem;
+  max-width: 48ch;
+  display: grid;
+  gap: 0.65rem;
+  font-size: clamp(1.05rem, 1rem + 0.4vw, 1.28rem);
+  line-height: 1.55;
   color: var(--ink-dim);
 }
 
-.lede em {
+.signature {
+  margin-bottom: 0.35rem;
+}
+
+.signature em {
   font-family: var(--font-display), serif;
   font-style: italic;
   font-weight: 400;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.6rem);
+  line-height: 1.1;
   color: var(--ink);
 }
 
@@ -297,31 +312,11 @@ main {
   white-space: nowrap;
 }
 
-.job-place {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-  margin: 0.15rem 0 0.9rem;
-}
-
-.job ul {
-  display: grid;
-  gap: 0.65rem;
-  list-style: none;
-}
-
-.job li {
-  position: relative;
-  padding-left: 1.2rem;
+.job-summary {
   color: var(--ink-dim);
-  font-size: 0.98rem;
-}
-
-.job li::before {
-  content: '—';
-  position: absolute;
-  left: 0;
-  color: var(--accent-2);
+  font-size: 1.02rem;
+  margin: 0.5rem 0 1rem;
+  max-width: 56ch;
 }
 
 /* ── Projects ────────────────────────────────────────────── */
@@ -418,12 +413,18 @@ main {
 
 .tag {
   font-family: var(--font-mono), monospace;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.02em;
-  padding: 0.25rem 0.55rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--ink-dim);
+  transition: border-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.card:hover .tag {
+  border-color: var(--line-strong);
 }
 
 .card-arrow {
