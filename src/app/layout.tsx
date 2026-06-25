@@ -1,10 +1,6 @@
 import type { Metadata } from 'next'
-import {
-  Fraunces,
-  Hanken_Grotesk,
-  JetBrains_Mono,
-  Spectral,
-} from 'next/font/google'
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
@@ -16,13 +12,7 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Spectral — refined, calm serif for the hero name.
-const spectral = Spectral({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500', '600'],
-  variable: '--font-headline',
-})
+// Geist — precise, technical geometric sans for the hero name (via geist pkg).
 
 const hanken = Hanken_Grotesk({
   subsets: ['latin'],
@@ -57,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${spectral.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${GeistSans.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
