@@ -1,10 +1,5 @@
 import type { Metadata } from 'next'
-import {
-  Fraunces,
-  Hanken_Grotesk,
-  JetBrains_Mono,
-  Poppins,
-} from 'next/font/google'
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
@@ -14,14 +9,6 @@ const fraunces = Fraunces({
   display: 'swap',
   axes: ['opsz', 'SOFT', 'WONK'],
   variable: '--font-display',
-})
-
-// Poppins — geometric sans-serif for the hero name.
-const poppins = Poppins({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-headline',
 })
 
 const hanken = Hanken_Grotesk({
@@ -57,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${poppins.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so

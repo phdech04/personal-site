@@ -177,7 +177,10 @@ main {
 }
 
 .hero-title {
-  font-family: var(--font-headline), system-ui, sans-serif;
+  /* Carnela Sans — not a web font, so it renders where installed (e.g. your
+     Mac) and falls back to a modern sans elsewhere. */
+  font-family: 'Carnela Sans', 'Carnela', var(--font-body), system-ui,
+    sans-serif;
   font-weight: 600;
   font-size: clamp(3rem, 11vw, 8.5rem);
   line-height: 1;
