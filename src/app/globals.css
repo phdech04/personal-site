@@ -177,15 +177,12 @@ main {
 }
 
 .hero-title {
-  /* Fraunces — the site's display voice (section titles + signature), here
-     upright and optically sized for display so the whole page feels seamless. */
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-headline), Georgia, serif;
   font-style: normal;
-  font-weight: 600;
-  font-variation-settings: 'opsz' 144;
-  font-size: clamp(3rem, 11vw, 8.5rem);
-  line-height: 0.98;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  font-size: clamp(3.4rem, 12vw, 9.5rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   perspective: 600px;

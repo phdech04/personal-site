@@ -1,14 +1,27 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
+import {
+  Fraunces,
+  Hanken_Grotesk,
+  JetBrains_Mono,
+  Instrument_Serif,
+} from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
-// the hero name, section titles, and the italic signature.
+// section titles and the italic signature.
 const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   axes: ['opsz', 'SOFT', 'WONK'],
   variable: '--font-display',
+})
+
+// Instrument Serif — light, elegant editorial serif for the hero name.
+const instrument = Instrument_Serif({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: '400',
+  variable: '--font-headline',
 })
 
 const hanken = Hanken_Grotesk({
@@ -44,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${instrument.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
