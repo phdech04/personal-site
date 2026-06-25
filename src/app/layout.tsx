@@ -52,7 +52,10 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "document.documentElement.setAttribute('data-intro','armed')",
+              "document.documentElement.setAttribute('data-intro','armed');" +
+              // Failsafe: if the intro JS never runs (bundle fails to load),
+              // reveal the hero anyway after a few seconds.
+              "setTimeout(function(){if(document.documentElement.getAttribute('data-intro')==='armed'){document.documentElement.setAttribute('data-intro','on')}},4000)",
           }}
         />
         {children}
