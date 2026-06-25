@@ -9,26 +9,29 @@ const links = {
 }
 
 const NAME = 'Phemo Den Chaba'
-const GLYPHS = '×÷∑∫π∂√≈≠=λΣ'
 
-// Typewriter timing (in animation frames, ~60fps). Tune freely:
-const SYMBOL_FRAMES = 9 // how long a math symbol shows before flipping to its letter
-const PER_CHAR = 9 // frames between successive letters (== SYMBOL_FRAMES → one symbol at a time)
-const SPACE_FRAMES = 3 // brief pause on spaces
+// Math symbols that visually resemble their letter. On load the name is
+// rendered with these, then each flips back to the real letter.
+const SUB: Record<string, string> = {
+  e: 'ε', // epsilon
+  a: 'α', // alpha
+}
 
-// Per-character schedule: when each char starts and when it locks to its letter.
-const SCHED = (() => {
-  let t = 0
-  const arr = NAME.split('').map((c) => {
-    const start = t
-    if (c === ' ') {
-      t += SPACE_FRAMES
-      return { start, lock: start, space: true }
+// Flip timing (animation frames, ~60fps). Tune freely:
+const HOLD = 72 // how long the symbols stay before they begin flipping (~1.2s)
+const STAGGER = 5 // frames between each letter's flip (~85ms)
+
+// When each substitutable character flips back to its real letter.
+const FLIP = (() => {
+  const flipAt: number[] = []
+  let order = 0
+  for (let i = 0; i < NAME.length; i += 1) {
+    if (SUB[NAME[i]] !== undefined) {
+      flipAt[i] = HOLD + order * STAGGER
+      order += 1
     }
-    t += PER_CHAR
-    return { start, lock: start + SYMBOL_FRAMES, space: false }
-  })
-  return { arr, end: t + 2 }
+  }
+  return { flipAt, end: HOLD + Math.max(0, order - 1) * STAGGER + 2 }
 })()
 
 const experience = [
@@ -101,14 +104,14 @@ const projects = [
 ]
 
 export default function Home() {
-  // Start fully resolved so the name is visible without JS / during SSR.
-  const [frame, setFrame] = useState(SCHED.end)
+  // Start fully resolved so the real name shows without JS / during SSR.
+  const [frame, setFrame] = useState(FLIP.end)
 
-  // Type the name one character at a time: each letter appears first as a
-  // single math symbol, then flips into the letter before the next begins.
+  // On load, show the look-alike symbols, hold, then flip each back to its
+  // letter (staggered, left to right).
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setFrame(SCHED.end)
+      setFrame(FLIP.end)
       return
     }
     setFrame(0)
@@ -117,32 +120,30 @@ export default function Home() {
     const step = () => {
       f += 1
       setFrame(f)
-      if (f < SCHED.end) raf = requestAnimationFrame(step)
+      if (f < FLIP.end) raf = requestAnimationFrame(step)
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
   }, [])
 
-  // Render one character: hidden (reserves width), a math symbol, or the letter.
+  // Render one character: its math symbol (before flip) or the real letter.
   const renderChar = (i: number) => {
     const c = NAME[i]
-    if (c === ' ') return <span key={i}>{' '}</span>
-    const s = SCHED.arr[i]
-    if (frame < s.start) {
+    if (c === ' ') return <span key={i}>{' '}</span>
+    const sym = SUB[c]
+    if (sym === undefined) return <span key={i}>{c}</span>
+    if (frame < FLIP.flipAt[i]) {
       return (
-        <span key={i} style={{ visibility: 'hidden' }}>
-          {c}
+        <span key={i} className="ch-glyph">
+          {sym}
         </span>
       )
     }
-    if (frame < s.lock) {
-      return (
-        <span key={i} className="ch-symbol">
-          {GLYPHS[i % GLYPHS.length]}
-        </span>
-      )
-    }
-    return <span key={i}>{c}</span>
+    return (
+      <span key={i} className="ch-flip">
+        {c}
+      </span>
+    )
   }
 
   const breakAt = NAME.indexOf(' ')
@@ -282,7 +283,14 @@ export default function Home() {
               >
                 <div className="card-top">
                   <h3>{proj.name}</h3>
-                  {proj.badge && <span className="badge">{proj.badge}</span>}
+                  <span className="card-meta">
+                    {proj.badge && (
+                      <span className="badge">{proj.badge}</span>
+                    )}
+                    <span className="card-arrow" aria-hidden="true">
+                      ↗
+                    </span>
+                  </span>
                 </div>
                 <p>{proj.blurb}</p>
                 <div className="tags">
@@ -292,9 +300,6 @@ export default function Home() {
                     </span>
                   ))}
                 </div>
-                <span className="card-arrow" aria-hidden="true">
-                  ↗
-                </span>
               </a>
             ))}
           </div>

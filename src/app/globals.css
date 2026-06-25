@@ -153,15 +153,6 @@ main {
   letter-spacing: -0.03em;
   overflow-wrap: break-word;
   font-variation-settings: 'opsz' 144, 'SOFT' 0;
-  background: linear-gradient(
-    180deg,
-    #fff 0%,
-    var(--ink) 55%,
-    var(--ink-faint) 120%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
 }
 
@@ -169,11 +160,37 @@ main {
   display: block;
 }
 
-/* The transient math symbol shown just before a letter resolves */
-.ch-symbol {
+/* Gradient lives on each letter so the flip transform always renders */
+.title-line > span {
+  display: inline-block;
+  background: linear-gradient(180deg, #fff 0%, var(--ink) 72%, var(--ink-faint) 118%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Look-alike math symbol shown before a letter flips back to normal */
+.ch-glyph {
+  background: none;
   color: var(--accent-2);
   -webkit-text-fill-color: var(--accent-2);
-  opacity: 0.85;
+}
+
+/* A letter that has just flipped back from its symbol */
+.ch-flip {
+  display: inline-block;
+  animation: flipBack 0.5s var(--ease) both;
+}
+
+@keyframes flipBack {
+  0% {
+    transform: rotateX(-85deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
 }
 
 .lede {
@@ -421,20 +438,26 @@ main {
   border-color: var(--line-strong);
 }
 
+.card-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
 .card-arrow {
-  position: absolute;
-  top: 1.4rem;
-  right: 1.5rem;
-  font-size: 1rem;
-  color: var(--accent);
-  opacity: 0;
-  transform: translate(-4px, 4px);
-  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  opacity: 0.7;
+  transition: color 0.3s var(--ease), opacity 0.3s var(--ease),
+    transform 0.3s var(--ease);
 }
 
 .card:hover .card-arrow {
+  color: var(--accent);
   opacity: 1;
-  transform: translate(0, 0);
+  transform: translate(2px, -2px);
 }
 
 /* ── Awards ──────────────────────────────────────────────── */
