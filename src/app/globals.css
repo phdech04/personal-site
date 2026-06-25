@@ -179,7 +179,7 @@ main {
 .hero-title {
   font-family: var(--font-headline), system-ui, sans-serif;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   font-size: clamp(3rem, 11vw, 8.5rem);
   line-height: 0.98;
   letter-spacing: -0.02em;

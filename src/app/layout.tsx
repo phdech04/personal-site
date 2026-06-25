@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono, Syne } from 'next/font/google'
+import {
+  Fraunces,
+  Hanken_Grotesk,
+  JetBrains_Mono,
+  Familjen_Grotesk,
+} from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
@@ -11,8 +16,8 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Syne — distinctive geometric display sans for the hero name.
-const syne = Syne({
+// Familjen Grotesk — friendly contemporary grotesque for the hero name.
+const familjen = Familjen_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-headline',
@@ -51,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${syne.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${familjen.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
