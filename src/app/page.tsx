@@ -113,8 +113,9 @@ const projects = [
 export default function Home() {
   // Elapsed intro time in ms. Start at END so SSR / no-JS shows the final page.
   const [t, setT] = useState(END)
-  // Translate (px) that places the big statement at screen-center while typing.
-  const [morph, setMorph] = useState({ tx: 0, ty: 0 })
+  // Translate (px) + scale that place the big statement at screen-center while
+  // typing. Scale is capped to the viewport so it never overflows on mobile.
+  const [morph, setMorph] = useState({ tx: 0, ty: 0, scale: SCALE })
   const sigRef = useRef<HTMLElement>(null)
 
   // Drive the intro: clear the flash gate, measure the statement's resting
@@ -128,9 +129,12 @@ export default function Home() {
     const el = sigRef.current
     if (el) {
       const r = el.getBoundingClientRect()
+      // Don't let the enlarged statement exceed ~90% of the viewport width.
+      const scale = Math.min(SCALE, (window.innerWidth * 0.9) / r.width)
       setMorph({
-        tx: window.innerWidth / 2 - (r.width * SCALE) / 2 - r.left,
+        tx: window.innerWidth / 2 - (r.width * scale) / 2 - r.left,
         ty: window.innerHeight / 2 - (r.top + r.height / 2),
+        scale,
       })
     }
     setT(0)
@@ -157,7 +161,7 @@ export default function Home() {
   // The statement morph: big & centered while typing, then shrinks to place.
   const sigStyle: CSSProperties = {
     transform: typing
-      ? `translate(${morph.tx}px, ${morph.ty}px) scale(${SCALE})`
+      ? `translate(${morph.tx}px, ${morph.ty}px) scale(${morph.scale})`
       : 'none',
     transition: typing ? 'none' : `transform ${SHRINK_MS}ms var(--ease)`,
   }
