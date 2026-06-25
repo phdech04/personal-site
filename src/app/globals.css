@@ -177,9 +177,9 @@ main {
 }
 
 .hero-title {
-  /* Santrio — modern sans-serif. Not a web font, so it renders where installed
-     (e.g. your Mac) and falls back to a modern sans elsewhere. */
-  font-family: 'Santrio', var(--font-body), system-ui, sans-serif;
+  /* Orleans — not a web font, so it renders where installed (e.g. your Mac)
+     and falls back elsewhere. */
+  font-family: 'Orleans', var(--font-display), Georgia, serif;
   font-weight: 600;
   font-size: clamp(3rem, 11vw, 8.5rem);
   line-height: 0.98;
