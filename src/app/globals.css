@@ -169,6 +169,13 @@ main {
   display: block;
 }
 
+/* The transient math symbol shown just before a letter resolves */
+.ch-symbol {
+  color: var(--accent-2);
+  -webkit-text-fill-color: var(--accent-2);
+  opacity: 0.85;
+}
+
 .lede {
   margin-top: 1.5rem;
   max-width: 48ch;

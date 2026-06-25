@@ -9,7 +9,27 @@ const links = {
 }
 
 const NAME = 'Phemo Den Chaba'
-const GLYPHS = '×÷∑∫π∂√%+−=≈≠∞λΣ'
+const GLYPHS = '×÷∑∫π∂√≈≠=λΣ'
+
+// Typewriter timing (in animation frames, ~60fps). Tune freely:
+const SYMBOL_FRAMES = 9 // how long a math symbol shows before flipping to its letter
+const PER_CHAR = 9 // frames between successive letters (== SYMBOL_FRAMES → one symbol at a time)
+const SPACE_FRAMES = 3 // brief pause on spaces
+
+// Per-character schedule: when each char starts and when it locks to its letter.
+const SCHED = (() => {
+  let t = 0
+  const arr = NAME.split('').map((c) => {
+    const start = t
+    if (c === ' ') {
+      t += SPACE_FRAMES
+      return { start, lock: start, space: true }
+    }
+    t += PER_CHAR
+    return { start, lock: start + SYMBOL_FRAMES, space: false }
+  })
+  return { arr, end: t + 2 }
+})()
 
 const experience = [
   {
@@ -81,35 +101,56 @@ const projects = [
 ]
 
 export default function Home() {
-  const [name, setName] = useState(NAME)
+  // Start fully resolved so the name is visible without JS / during SSR.
+  const [frame, setFrame] = useState(SCHED.end)
 
-  // Resolve the name out of cycling mathematical symbols on load.
+  // Type the name one character at a time: each letter appears first as a
+  // single math symbol, then flips into the letter before the next begins.
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setName(NAME)
+      setFrame(SCHED.end)
       return
     }
-    const chars = NAME.split('')
-    const settle = chars.map((c, i) => (c === ' ' ? 0 : 16 + i * 5))
-    const end = Math.max(...settle) + 1
-    let frame = 0
+    setFrame(0)
+    let f = 0
     let raf = 0
     const step = () => {
-      frame += 1
-      const out = chars
-        .map((c, i) => {
-          if (c === ' ') return ' '
-          if (frame >= settle[i]) return c
-          return GLYPHS[(frame * 3 + i * 7) % GLYPHS.length]
-        })
-        .join('')
-      setName(out)
-      if (frame < end) raf = requestAnimationFrame(step)
-      else setName(NAME)
+      f += 1
+      setFrame(f)
+      if (f < SCHED.end) raf = requestAnimationFrame(step)
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
   }, [])
+
+  // Render one character: hidden (reserves width), a math symbol, or the letter.
+  const renderChar = (i: number) => {
+    const c = NAME[i]
+    if (c === ' ') return <span key={i}>{' '}</span>
+    const s = SCHED.arr[i]
+    if (frame < s.start) {
+      return (
+        <span key={i} style={{ visibility: 'hidden' }}>
+          {c}
+        </span>
+      )
+    }
+    if (frame < s.lock) {
+      return (
+        <span key={i} className="ch-symbol">
+          {GLYPHS[i % GLYPHS.length]}
+        </span>
+      )
+    }
+    return <span key={i}>{c}</span>
+  }
+
+  const breakAt = NAME.indexOf(' ')
+  const line1 = Array.from({ length: breakAt }, (_, k) => renderChar(k))
+  const line2 = Array.from(
+    { length: NAME.length - breakAt - 1 },
+    (_, k) => renderChar(breakAt + 1 + k)
+  )
 
   // Reveal-on-scroll for elements marked [data-reveal].
   // The hidden initial state is gated behind `.reveal-ready`, which is only
@@ -153,18 +194,8 @@ export default function Home() {
             style={{ animationDelay: '0.12s' }}
             aria-label={NAME}
           >
-            {(() => {
-              const words = name.split(' ')
-              const lines =
-                words.length > 1
-                  ? [words[0], words.slice(1).join(' ')]
-                  : words
-              return lines.map((line, i) => (
-                <span className="title-line" key={i}>
-                  {line}
-                </span>
-              ))
-            })()}
+            <span className="title-line">{line1}</span>
+            <span className="title-line">{line2}</span>
           </h1>
 
           <div className="lede hero-load" style={{ animationDelay: '0.22s' }}>
