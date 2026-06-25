@@ -179,9 +179,9 @@ main {
 .hero-title {
   font-family: var(--font-headline), system-ui, sans-serif;
   font-weight: 600;
-  font-size: clamp(3.4rem, 13vw, 10rem);
-  line-height: 0.9;
-  letter-spacing: 0;
+  font-size: clamp(3rem, 10.5vw, 8rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   perspective: 600px;

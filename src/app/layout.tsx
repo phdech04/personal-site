@@ -1,10 +1,5 @@
 import type { Metadata } from 'next'
-import {
-  Fraunces,
-  Hanken_Grotesk,
-  JetBrains_Mono,
-  Big_Shoulders_Display,
-} from 'next/font/google'
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono, Sora } from 'next/font/google'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -14,9 +9,8 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// High-contrast sans-serif for the hero name: keeps the thick/thin variation
-// and curves of a Didone, without the sharp serifs.
-const headline = Big_Shoulders_Display({
+// Relaxed, rounded sans-serif for the hero name — warm and curvy, no serifs.
+const headline = Sora({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-headline',
