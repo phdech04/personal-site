@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono, Cinzel } from 'next/font/google'
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono, Raleway } from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
@@ -11,8 +11,8 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Cinzel — classical Roman-inscription serif for the hero name.
-const cinzel = Cinzel({
+// Raleway — elegant geometric sans-serif for the hero name.
+const raleway = Raleway({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-headline',
@@ -51,7 +51,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${cinzel.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${raleway.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
