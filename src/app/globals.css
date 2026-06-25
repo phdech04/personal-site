@@ -177,17 +177,11 @@ main {
 }
 
 .hero-title {
-  /* Optima — a humanist face with soft stroke contrast and flared terminals,
-     no serifs. Not a web font, so it renders on macOS and falls back to other
-     humanist sans elsewhere. */
-  font-family: 'Optima', 'Optima Nova', Candara, 'Gill Sans', 'Gill Sans MT',
-    var(--font-display), sans-serif;
-  /* Optima as a system font only has real Regular (400) and Bold (700) weights;
-     in-between values like 500/600 render inconsistently — stick to 400. */
-  font-weight: 400;
-  font-size: clamp(3rem, 11vw, 8.5rem);
-  line-height: 0.98;
-  letter-spacing: -0.01em;
+  font-family: var(--font-script), 'Segoe Script', cursive;
+  font-weight: 600;
+  font-size: clamp(3.4rem, 12.5vw, 9.5rem);
+  line-height: 1.02;
+  letter-spacing: 0;
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   perspective: 600px;

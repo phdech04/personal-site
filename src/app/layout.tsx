@@ -1,14 +1,26 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
+import {
+  Fraunces,
+  Hanken_Grotesk,
+  JetBrains_Mono,
+  Dancing_Script,
+} from 'next/font/google'
 import './globals.css'
 
 // Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
-// the hero name too, set soft + wonky so it reads relaxed and a little funky.
+// section titles and the italic signature.
 const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   axes: ['opsz', 'SOFT', 'WONK'],
   variable: '--font-display',
+})
+
+// Flowing script for the hero name.
+const dancing = Dancing_Script({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-script',
 })
 
 const hanken = Hanken_Grotesk({
@@ -44,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${dancing.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so

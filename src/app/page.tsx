@@ -182,12 +182,28 @@ export default function Home() {
     )
   }
 
+  // A line is fully resolved once all its letters have flipped.
+  const lineResolved = (start: number, len: number) => {
+    for (let k = 0; k < len; k += 1) {
+      const i = start + k
+      if (NAME[i] === ' ') continue
+      if (t < FLIP_BASE + FLIP_FRAC[i] * FLIP_SPAN) return false
+    }
+    return true
+  }
+
+  // While resolving: per-letter spans. Once resolved: one contiguous span so a
+  // script font's letters connect properly.
+  const renderLine = (start: number, len: number) =>
+    lineResolved(start, len) ? (
+      <span>{NAME.slice(start, start + len)}</span>
+    ) : (
+      Array.from({ length: len }, (_, k) => renderChar(start + k))
+    )
+
   const breakAt = NAME.indexOf(' ')
-  const line1 = Array.from({ length: breakAt }, (_, k) => renderChar(k))
-  const line2 = Array.from(
-    { length: NAME.length - breakAt - 1 },
-    (_, k) => renderChar(breakAt + 1 + k)
-  )
+  const line1 = renderLine(0, breakAt)
+  const line2 = renderLine(breakAt + 1, NAME.length - breakAt - 1)
 
   // Reveal-on-scroll for elements marked [data-reveal].
   // The hidden initial state is gated behind `.reveal-ready`, which is only
