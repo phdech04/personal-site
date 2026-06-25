@@ -146,13 +146,12 @@ main {
 }
 
 .hero-title {
-  font-family: var(--font-display), serif;
-  font-weight: 380;
+  font-family: var(--font-headline), system-ui, sans-serif;
+  font-weight: 700;
   font-size: clamp(3rem, 11vw, 8.5rem);
-  line-height: 0.9;
-  letter-spacing: -0.03em;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
   overflow-wrap: break-word;
-  font-variation-settings: 'opsz' 144, 'SOFT' 0;
   background: linear-gradient(
     180deg,
     #fff 0%,

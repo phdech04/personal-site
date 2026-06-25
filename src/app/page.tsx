@@ -12,23 +12,27 @@ const NAME = 'Phemo Den Chaba'
 const GLYPHS = '×÷∑∫π∂√≈≠=λΣ'
 
 // Typewriter timing (in animation frames, ~60fps). Tune freely:
-const SYMBOL_FRAMES = 9 // how long a math symbol shows before flipping to its letter
-const PER_CHAR = 9 // frames between successive letters (== SYMBOL_FRAMES → one symbol at a time)
-const SPACE_FRAMES = 3 // brief pause on spaces
+const SYMBOL_FRAMES = 11 // how long each math symbol shows before flipping to its letter
+const PER_CHAR = 10 // frames between successive letters within a word
+const WORD_OFFSET = 4 // small per-word stagger so words don't resolve in perfect lockstep
 
-// Per-character schedule: when each char starts and when it locks to its letter.
+// Per-character schedule. Every WORD starts at once and types in parallel —
+// a char's timing depends on its position within its word, not the whole name.
 const SCHED = (() => {
-  let t = 0
+  let wordPos = 0
+  let wordIndex = 0
   const arr = NAME.split('').map((c) => {
-    const start = t
     if (c === ' ') {
-      t += SPACE_FRAMES
-      return { start, lock: start, space: true }
+      wordPos = 0
+      wordIndex += 1
+      return { start: 0, lock: 0, space: true }
     }
-    t += PER_CHAR
+    const start = wordIndex * WORD_OFFSET + wordPos * PER_CHAR
+    wordPos += 1
     return { start, lock: start + SYMBOL_FRAMES, space: false }
   })
-  return { arr, end: t + 2 }
+  const end = Math.max(...arr.map((s) => s.lock)) + 2
+  return { arr, end }
 })()
 
 const experience = [

@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
+import {
+  Fraunces,
+  Hanken_Grotesk,
+  JetBrains_Mono,
+  Bricolage_Grotesque,
+} from 'next/font/google'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -7,6 +12,13 @@ const fraunces = Fraunces({
   display: 'swap',
   axes: ['opsz', 'SOFT'],
   variable: '--font-display',
+})
+
+// Distinctive display face used only for the big hero name.
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-headline',
 })
 
 const hanken = Hanken_Grotesk({
@@ -42,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${bricolage.variable}`}
     >
       <body>{children}</body>
     </html>
