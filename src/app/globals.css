@@ -504,13 +504,15 @@ main {
 }
 
 /* ── Reveal on scroll ────────────────────────────────────── */
-[data-reveal] {
+/* Hidden state applies ONLY once JS marks the page ready, so content is
+   always visible if JavaScript fails to load. */
+.reveal-ready [data-reveal] {
   opacity: 0;
   transform: translateY(26px);
   transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
 }
 
-[data-reveal].is-visible {
+.reveal-ready [data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
 }

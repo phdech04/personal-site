@@ -112,7 +112,11 @@ export default function Home() {
   }, [])
 
   // Reveal-on-scroll for elements marked [data-reveal].
+  // The hidden initial state is gated behind `.reveal-ready`, which is only
+  // added here — so if JS never runs, all content stays fully visible.
   useEffect(() => {
+    const root = document.documentElement
+    root.classList.add('reveal-ready')
     const els = Array.from(document.querySelectorAll('[data-reveal]'))
     if (!('IntersectionObserver' in window)) {
       els.forEach((el) => el.classList.add('is-visible'))
