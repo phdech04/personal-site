@@ -56,7 +56,17 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${playfair.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {/* Hide the hero before the intro paints — only when JS is present, so
+            no-JS users still see the full page. Cleared by the intro effect. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "document.documentElement.setAttribute('data-intro','armed')",
+          }}
+        />
+        {children}
+      </body>
     </html>
   )
 }

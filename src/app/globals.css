@@ -115,6 +115,37 @@ a {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Flash gate: hide the hero until the intro effect clears `armed` (JS only) */
+html[data-intro='armed'] .eyebrow,
+html[data-intro='armed'] .hero-title,
+html[data-intro='armed'] .signature,
+html[data-intro='armed'] .lede-rest,
+html[data-intro='armed'] .hero-links {
+  opacity: 0 !important;
+}
+
+/* Blinking typing caret after the statement text */
+.caret {
+  display: inline-block;
+  width: 0.05em;
+  height: 0.95em;
+  margin-left: 0.06em;
+  vertical-align: -0.12em;
+  background: var(--accent-2);
+  animation: caretBlink 1s steps(1) infinite;
+}
+
+@keyframes caretBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
 main {
   position: relative;
   z-index: 2;
@@ -177,58 +208,24 @@ main {
   opacity: 0.9;
 }
 
-/* Per-letter entrance effects for Den & Chaba */
-.anim-swing {
-  animation: swingIn 0.6s var(--ease) both;
-  transform-origin: 50% 0;
-}
-.anim-spawn {
-  animation: spawnIn 0.5s var(--ease) both;
-}
-.anim-slide {
-  animation: slideIn 0.5s var(--ease) both;
+/* A placeholder symbol flipping into its real letter */
+.ch-flip {
+  display: inline-block;
+  animation: flipBack 0.45s var(--ease) both;
 }
 
-@keyframes swingIn {
+@keyframes flipBack {
   0% {
-    transform: rotate(38deg) translateY(-0.15em);
-    opacity: 0;
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(0) translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes spawnIn {
-  0% {
-    transform: scale(0.1);
-    opacity: 0;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  0% {
-    transform: translateY(0.7em);
+    transform: rotateX(-85deg);
     opacity: 0;
   }
   100% {
-    transform: translateY(0);
+    transform: rotateX(0deg);
     opacity: 1;
   }
 }
 
-.lede {
+.lede-rest {
   margin-top: 1.5rem;
   max-width: 48ch;
   display: grid;
@@ -239,10 +236,13 @@ main {
 }
 
 .signature {
-  margin-bottom: 0.35rem;
+  margin-top: 1.25rem;
 }
 
 .signature em {
+  display: inline-block;
+  transform-origin: 0% 50%;
+  will-change: transform;
   font-family: var(--font-display), serif;
   font-style: italic;
   font-weight: 400;

@@ -1,6 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import type { CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+
+// useLayoutEffect on the client, useEffect on the server (avoids SSR warning).
+const useIso = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 const links = {
   github: 'https://github.com/phdech04',
@@ -9,41 +13,29 @@ const links = {
 }
 
 const NAME = 'Phemo Den Chaba'
-const GLYPHS = '×÷∑∫π∂√≈≠=λΣ'
-const DIGITS = '0123456789'
+const GLYPHS = '×÷∑∫π∂√≈≠=λΣμθΩ∞∇'
+const STMT = 'It’s always mathematical.'
 
-// Timing (animation frames, ~60fps). Tune freely:
-const SYMBOL_FRAMES = 12 // how long the symbol / number phase lasts before the letter
-const PER_CHAR = 9 // frames between successive letters within a word
-const WORD_OFFSET = 5 // small per-word stagger so words don't resolve in lockstep
+// Deterministic pseudo-random in [0, 1) — stable across SSR + client.
+const rand = (seed: number) => {
+  const x = Math.sin(seed * 12.9898) * 43758.5453
+  return x - Math.floor(x)
+}
 
-// Entrance effects for the letters of Den & Chaba (Phemo always resolves out
-// of math symbols). A varied, deterministic mix so it feels lively.
-const VARIANTS = ['number', 'swing', 'spawn', 'slide']
+// Per-letter pseudo-random fraction → name flips to real text in random order.
+const FLIP_FRAC = NAME.split('').map((c, i) => (c === ' ' ? 0 : rand(i + 50)))
 
-// Per-character schedule. Every WORD starts at once and animates in parallel —
-// a char's timing depends on its position within its word, not the whole name.
-const SCHED = (() => {
-  let wordPos = 0
-  let wordIndex = 0
-  const arr = NAME.split('').map((c, i) => {
-    if (c === ' ') {
-      wordPos = 0
-      wordIndex += 1
-      return { start: 0, done: 0, space: true, effect: 'space' }
-    }
-    const start = wordIndex * WORD_OFFSET + wordPos * PER_CHAR
-    const effect =
-      wordIndex === 0 ? 'symbols' : VARIANTS[(i * 3 + wordPos) % VARIANTS.length]
-    wordPos += 1
-    // 'symbols' and 'number' show a glyph for a while; the rest appear at once.
-    const done =
-      effect === 'symbols' || effect === 'number' ? start + SYMBOL_FRAMES : start
-    return { start, done, space: false, effect }
-  })
-  const end = Math.max(...arr.map((s) => s.done)) + 2
-  return { arr, end }
-})()
+// Intro timeline (milliseconds):
+const TYPE_PER = 62 // ms per typed character of the statement
+const TYPE_DONE = STMT.length * TYPE_PER // statement fully typed
+const HOLD = 550 // pause (caret blinking) after the period
+const SHRINK_START = TYPE_DONE + HOLD // statement starts shrinking to place
+const SHRINK_MS = 750 // shrink-to-place duration
+const FLIP_BASE = SHRINK_START + 150 // placeholder symbols start flipping
+const FLIP_SPAN = 700 // spread of the random flips
+const REVEAL = SHRINK_START + 900 // paragraph slides up; eyebrow + links fade in
+const END = REVEAL + 900 // stop the clock
+const SCALE = 1.6 // how much bigger the statement is while it types
 
 const experience = [
   {
@@ -115,62 +107,74 @@ const projects = [
 ]
 
 export default function Home() {
-  // Start fully resolved so the name is visible without JS / during SSR.
-  const [frame, setFrame] = useState(SCHED.end)
+  // Elapsed intro time in ms. Start at END so SSR / no-JS shows the final page.
+  const [t, setT] = useState(END)
+  // Translate (px) that places the big statement at screen-center while typing.
+  const [morph, setMorph] = useState({ tx: 0, ty: 0 })
+  const sigRef = useRef<HTMLElement>(null)
 
-  // Type the name one character at a time: each letter appears first as a
-  // single math symbol, then flips into the letter before the next begins.
-  useEffect(() => {
+  // Drive the intro: clear the flash gate, measure the statement's resting
+  // spot, then run the clock (type → shrink to place → name resolves → reveal).
+  useIso(() => {
+    document.documentElement.setAttribute('data-intro', 'on')
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setFrame(SCHED.end)
+      setT(END)
       return
     }
-    setFrame(0)
-    let f = 0
+    const el = sigRef.current
+    if (el) {
+      const r = el.getBoundingClientRect()
+      setMorph({
+        tx: window.innerWidth / 2 - (r.width * SCALE) / 2 - r.left,
+        ty: window.innerHeight / 2 - (r.top + r.height / 2),
+      })
+    }
+    setT(0)
+    const start = performance.now()
     let raf = 0
     const step = () => {
-      f += 1
-      setFrame(f)
-      if (f < SCHED.end) raf = requestAnimationFrame(step)
+      const e = performance.now() - start
+      setT(e)
+      if (e < END) raf = requestAnimationFrame(step)
+      else setT(END)
     }
     raf = requestAnimationFrame(step)
     return () => cancelAnimationFrame(raf)
   }, [])
 
-  // Render one character: hidden (reserves width), a math symbol, or the letter.
+  const typing = t < SHRINK_START
+  const nameShown = t >= SHRINK_START
+  const revealed = t >= REVEAL
+  const typedCount = typing
+    ? Math.min(STMT.length, Math.floor(t / TYPE_PER))
+    : STMT.length
+
+  // The statement morph: big & centered while typing, then shrinks to place.
+  const sigStyle: CSSProperties = {
+    transform: typing
+      ? `translate(${morph.tx}px, ${morph.ty}px) scale(${SCALE})`
+      : 'none',
+    transition: typing ? 'none' : `transform ${SHRINK_MS}ms var(--ease)`,
+  }
+
+  // Render one name character: a placeholder symbol, then flip to the letter.
   const renderChar = (i: number) => {
     const c = NAME[i]
     if (c === ' ') return <span key={i}>{' '}</span>
-    const s = SCHED.arr[i]
-    // Before its turn: reserve width but stay invisible.
-    if (frame < s.start) {
-      return (
-        <span key={i} style={{ visibility: 'hidden' }}>
-          {c}
-        </span>
-      )
-    }
-    // Glyph phase: math symbols (Phemo) or scrambling digits (number effect).
-    if (frame < s.done) {
-      const glyph =
-        s.effect === 'number'
-          ? DIGITS[(frame + i) % DIGITS.length]
-          : GLYPHS[i % GLYPHS.length]
+    const flipTime = FLIP_BASE + FLIP_FRAC[i] * FLIP_SPAN
+    if (t < flipTime) {
+      const glyph = GLYPHS[(Math.floor(t / 60) + i * 3) % GLYPHS.length]
       return (
         <span key={i} className="ch-symbol">
           {glyph}
         </span>
       )
     }
-    // Resolved letter — swing / spawn / slide get a one-shot entrance.
-    if (s.effect === 'swing' || s.effect === 'spawn' || s.effect === 'slide') {
-      return (
-        <span key={i} className={`anim-${s.effect}`}>
-          {c}
-        </span>
-      )
-    }
-    return <span key={i}>{c}</span>
+    return (
+      <span key={i} className="ch-flip">
+        {c}
+      </span>
+    )
   }
 
   const breakAt = NAME.indexOf(' ')
@@ -214,22 +218,42 @@ export default function Home() {
       <main>
         {/* ── Hero ── */}
         <header className="hero">
-          <p className="eyebrow hero-load" style={{ animationDelay: '0.05s' }}>
+          <p
+            className="eyebrow"
+            style={{
+              opacity: revealed ? 1 : 0,
+              transition: 'opacity 0.6s var(--ease)',
+            }}
+          >
             Mathematics · Quantitative Finance · ML
           </p>
           <h1
-            className="hero-title hero-load"
-            style={{ animationDelay: '0.12s' }}
+            className="hero-title"
             aria-label={NAME}
+            style={{
+              opacity: nameShown ? 1 : 0,
+              transition: 'opacity 0.5s var(--ease)',
+            }}
           >
             <span className="title-line">{line1}</span>
             <span className="title-line">{line2}</span>
           </h1>
 
-          <div className="lede hero-load" style={{ animationDelay: '0.22s' }}>
-            <p className="signature">
-              <em>It&rsquo;s always mathematical.</em>
-            </p>
+          <p className="signature">
+            <em ref={sigRef} style={sigStyle}>
+              {STMT.slice(0, typedCount)}
+              {typing && <span className="caret" aria-hidden="true" />}
+            </em>
+          </p>
+
+          <div
+            className="lede-rest"
+            style={{
+              opacity: revealed ? 1 : 0,
+              transform: revealed ? 'none' : 'translateY(30px)',
+              transition: 'opacity 0.7s var(--ease), transform 0.7s var(--ease)',
+            }}
+          >
             <p>
               I study Mathematical Finance and Applied Mathematics at Waterloo,
               with a focus on machine learning.
@@ -237,7 +261,13 @@ export default function Home() {
             <p>I build systems that survive contact with the real world.</p>
           </div>
 
-          <nav className="hero-links hero-load" style={{ animationDelay: '0.3s' }}>
+          <nav
+            className="hero-links"
+            style={{
+              opacity: revealed ? 1 : 0,
+              transition: 'opacity 0.6s var(--ease) 0.1s',
+            }}
+          >
             <a href={links.github} target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
