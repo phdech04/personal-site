@@ -182,7 +182,7 @@ main {
      humanist sans elsewhere. */
   font-family: 'Optima', 'Optima Nova', Candara, 'Gill Sans', 'Gill Sans MT',
     var(--font-display), sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   font-size: clamp(3rem, 11vw, 8.5rem);
   line-height: 0.98;
   letter-spacing: -0.01em;
