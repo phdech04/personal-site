@@ -25,16 +25,18 @@ const rand = (seed: number) => {
 // Per-letter pseudo-random fraction → name flips to real text in random order.
 const FLIP_FRAC = NAME.split('').map((c, i) => (c === ' ' ? 0 : rand(i + 50)))
 
-// Intro timeline (milliseconds):
+// Intro timeline (milliseconds). Order: type statement → shrink → eyebrow +
+// paragraph + links slide in → THEN the name shows up and resolves, slowly.
 const TYPE_PER = 62 // ms per typed character of the statement
 const TYPE_DONE = STMT.length * TYPE_PER // statement fully typed
-const HOLD = 550 // pause (caret blinking) after the period
+const HOLD = 600 // pause (caret blinking) after the period
 const SHRINK_START = TYPE_DONE + HOLD // statement starts shrinking to place
-const SHRINK_MS = 750 // shrink-to-place duration
-const FLIP_BASE = SHRINK_START + 150 // placeholder symbols start flipping
-const FLIP_SPAN = 700 // spread of the random flips
-const REVEAL = SHRINK_START + 900 // paragraph slides up; eyebrow + links fade in
-const END = REVEAL + 900 // stop the clock
+const SHRINK_MS = 800 // shrink-to-place duration
+const REVEAL = SHRINK_START + 250 // eyebrow + paragraph + links slide in first
+const NAME_START = REVEAL + 550 // then the name appears and begins resolving
+const FLIP_BASE = NAME_START // first letters start flipping
+const FLIP_SPAN = 1500 // long, gradual spread so it resolves seamlessly
+const END = FLIP_BASE + FLIP_SPAN + 800 // stop the clock
 const SCALE = 1.6 // how much bigger the statement is while it types
 
 const experience = [
@@ -143,8 +145,8 @@ export default function Home() {
   }, [])
 
   const typing = t < SHRINK_START
-  const nameShown = t >= SHRINK_START
   const revealed = t >= REVEAL
+  const nameShown = t >= NAME_START
   const typedCount = typing
     ? Math.min(STMT.length, Math.floor(t / TYPE_PER))
     : STMT.length
@@ -163,7 +165,7 @@ export default function Home() {
     if (c === ' ') return <span key={i}>{' '}</span>
     const flipTime = FLIP_BASE + FLIP_FRAC[i] * FLIP_SPAN
     if (t < flipTime) {
-      const glyph = GLYPHS[(Math.floor(t / 60) + i * 3) % GLYPHS.length]
+      const glyph = GLYPHS[(Math.floor(t / 150) + i * 3) % GLYPHS.length]
       return (
         <span key={i} className="ch-symbol">
           {glyph}
@@ -222,7 +224,9 @@ export default function Home() {
             className="eyebrow"
             style={{
               opacity: revealed ? 1 : 0,
-              transition: 'opacity 0.6s var(--ease)',
+              transform: revealed ? 'none' : 'translateY(16px)',
+              transition:
+                'opacity 0.7s var(--ease), transform 0.7s var(--ease)',
             }}
           >
             Mathematics · Quantitative Finance · ML
@@ -232,7 +236,7 @@ export default function Home() {
             aria-label={NAME}
             style={{
               opacity: nameShown ? 1 : 0,
-              transition: 'opacity 0.5s var(--ease)',
+              transition: 'opacity 0.9s var(--ease)',
             }}
           >
             <span className="title-line">{line1}</span>
@@ -251,7 +255,7 @@ export default function Home() {
             style={{
               opacity: revealed ? 1 : 0,
               transform: revealed ? 'none' : 'translateY(30px)',
-              transition: 'opacity 0.7s var(--ease), transform 0.7s var(--ease)',
+              transition: 'opacity 0.8s var(--ease), transform 0.8s var(--ease)',
             }}
           >
             <p>
@@ -265,7 +269,9 @@ export default function Home() {
             className="hero-links"
             style={{
               opacity: revealed ? 1 : 0,
-              transition: 'opacity 0.6s var(--ease) 0.1s',
+              transform: revealed ? 'none' : 'translateY(16px)',
+              transition:
+                'opacity 0.7s var(--ease) 0.12s, transform 0.7s var(--ease) 0.12s',
             }}
           >
             <a href={links.github} target="_blank" rel="noopener noreferrer">

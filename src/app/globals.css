@@ -200,27 +200,29 @@ main {
   -webkit-text-fill-color: transparent;
 }
 
-/* The transient math symbol / scrambling digit shown before a letter resolves */
+/* The transient placeholder symbol shown before a letter resolves — kept dim
+   and quiet so the flip into the real letter feels seamless, not flashy. */
 .ch-symbol {
   background: none;
-  color: var(--accent-2);
-  -webkit-text-fill-color: var(--accent-2);
-  opacity: 0.9;
+  color: var(--ink-dim);
+  -webkit-text-fill-color: var(--ink-dim);
+  opacity: 0.55;
 }
 
-/* A placeholder symbol flipping into its real letter */
+/* A placeholder symbol resolving into its real letter — a gentle fade and
+   small rise rather than a hard flip, so it reads as seamless. */
 .ch-flip {
   display: inline-block;
-  animation: flipBack 0.45s var(--ease) both;
+  animation: flipBack 0.7s var(--ease) both;
 }
 
 @keyframes flipBack {
   0% {
-    transform: rotateX(-85deg);
+    transform: translateY(0.12em);
     opacity: 0;
   }
   100% {
-    transform: rotateX(0deg);
+    transform: translateY(0);
     opacity: 1;
   }
 }
