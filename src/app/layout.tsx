@@ -3,7 +3,7 @@ import {
   Fraunces,
   Hanken_Grotesk,
   JetBrains_Mono,
-  Instrument_Serif,
+  Spectral,
 } from 'next/font/google'
 import './globals.css'
 
@@ -16,11 +16,11 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Instrument Serif — light, elegant editorial serif for the hero name.
-const instrument = Instrument_Serif({
+// Spectral — refined, calm serif for the hero name.
+const spectral = Spectral({
   subsets: ['latin'],
   display: 'swap',
-  weight: '400',
+  weight: ['400', '500', '600'],
   variable: '--font-headline',
 })
 
@@ -57,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${instrument.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${spectral.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
