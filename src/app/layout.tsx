@@ -1,21 +1,13 @@
 import type { Metadata } from 'next'
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono, Sora } from 'next/font/google'
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
-// Fraunces with the SOFT (rounded terminals) and WONK (playful) axes — used for
-// section titles and the italic signature.
+// Fraunces — the hero name, section titles, and italic signature.
 const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   axes: ['opsz', 'SOFT', 'WONK'],
   variable: '--font-display',
-})
-
-// Sora — geometric sans for the hero name.
-const sora = Sora({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-headline',
 })
 
 const hanken = Hanken_Grotesk({
@@ -51,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${sora.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
