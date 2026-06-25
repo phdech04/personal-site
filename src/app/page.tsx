@@ -25,15 +25,17 @@ const rand = (seed: number) => {
 // Per-letter pseudo-random fraction → name flips to real text in random order.
 const FLIP_FRAC = NAME.split('').map((c, i) => (c === ' ' ? 0 : rand(i + 50)))
 
-// Intro timeline (milliseconds). Order: type statement → shrink → eyebrow +
-// paragraph + links slide in → THEN the name shows up and resolves, slowly.
+// Intro timeline (milliseconds). Order: type statement (big) → header appears
+// at normal size while it's still big → statement shrinks (slow) as paragraph +
+// links slide up → small delay → name appears and resolves slowly.
 const TYPE_PER = 62 // ms per typed character of the statement
 const TYPE_DONE = STMT.length * TYPE_PER // statement fully typed
-const HOLD = 600 // pause (caret blinking) after the period
-const SHRINK_START = TYPE_DONE + HOLD // statement starts shrinking to place
-const SHRINK_MS = 800 // shrink-to-place duration
-const REVEAL = SHRINK_START + 250 // eyebrow + paragraph + links slide in first
-const NAME_START = REVEAL + 550 // then the name appears and begins resolving
+const HOLD = 500 // pause (caret blinking) after the period
+const EYEBROW_AT = TYPE_DONE + HOLD // header fades in (normal size) while statement still big
+const SHRINK_START = EYEBROW_AT + 450 // then the statement begins shrinking to place
+const SHRINK_MS = 1000 // slower shrink-to-place
+const REVEAL = SHRINK_START // paragraph + links slide up during the shrink
+const NAME_START = SHRINK_START + SHRINK_MS + 450 // small delay after shrink, then name
 const FLIP_BASE = NAME_START // first letters start flipping
 const FLIP_SPAN = 1500 // long, gradual spread so it resolves seamlessly
 const END = FLIP_BASE + FLIP_SPAN + 800 // stop the clock
@@ -145,6 +147,7 @@ export default function Home() {
   }, [])
 
   const typing = t < SHRINK_START
+  const eyebrowShown = t >= EYEBROW_AT
   const revealed = t >= REVEAL
   const nameShown = t >= NAME_START
   const typedCount = typing
@@ -223,8 +226,8 @@ export default function Home() {
           <p
             className="eyebrow"
             style={{
-              opacity: revealed ? 1 : 0,
-              transform: revealed ? 'none' : 'translateY(16px)',
+              opacity: eyebrowShown ? 1 : 0,
+              transform: eyebrowShown ? 'none' : 'translateY(10px)',
               transition:
                 'opacity 0.7s var(--ease), transform 0.7s var(--ease)',
             }}

@@ -3,7 +3,7 @@ import {
   Fraunces,
   Hanken_Grotesk,
   JetBrains_Mono,
-  Playfair_Display,
+  Big_Shoulders_Display,
 } from 'next/font/google'
 import './globals.css'
 
@@ -14,8 +14,9 @@ const fraunces = Fraunces({
   variable: '--font-display',
 })
 
-// Elegant high-contrast serif used for the big hero name.
-const playfair = Playfair_Display({
+// High-contrast sans-serif for the hero name: keeps the thick/thin variation
+// and curves of a Didone, without the sharp serifs.
+const headline = Big_Shoulders_Display({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-headline',
@@ -54,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${playfair.variable}`}
+      className={`${fraunces.variable} ${hanken.variable} ${jetbrains.variable} ${headline.variable}`}
     >
       <body>
         {/* Hide the hero before the intro paints — only when JS is present, so
