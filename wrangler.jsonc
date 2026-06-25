@@ -1,0 +1,10 @@
+{
+  // Deploy the static Next.js export (out/) as Cloudflare static assets.
+  // Having this file present stops wrangler from auto-configuring the
+  // OpenNext (server) adapter, which doesn't support Next.js 14.
+  "name": "personal-site",
+  "compatibility_date": "2026-06-25",
+  "assets": {
+    "directory": "./out"
+  }
+}
