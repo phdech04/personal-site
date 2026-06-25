@@ -177,13 +177,15 @@ main {
 }
 
 .hero-title {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 500;
+  /* Optima — a humanist face with soft stroke contrast and flared terminals,
+     no serifs. Not a web font, so it renders on macOS and falls back to other
+     humanist sans elsewhere. */
+  font-family: 'Optima', 'Optima Nova', Candara, 'Gill Sans', 'Gill Sans MT',
+    var(--font-display), sans-serif;
+  font-weight: 600;
   font-size: clamp(3rem, 11vw, 8.5rem);
-  line-height: 0.95;
-  letter-spacing: -0.025em;
-  /* soft, rounded terminals + wonky alternates → relaxed and a touch funky */
-  font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
   overflow-wrap: break-word;
   margin-bottom: 1rem;
   perspective: 600px;
