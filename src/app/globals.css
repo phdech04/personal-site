@@ -145,20 +145,6 @@ main {
   margin-bottom: 1.75rem;
 }
 
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-2);
-  box-shadow: 0 0 12px 1px var(--accent-2);
-  animation: pulse 2.4s var(--ease) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
-}
-
 .hero-title {
   font-family: var(--font-display), serif;
   font-weight: 380;

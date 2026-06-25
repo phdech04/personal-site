@@ -142,7 +142,7 @@ export default function Home() {
         {/* ── Hero ── */}
         <header className="hero">
           <p className="eyebrow hero-load" style={{ animationDelay: '0.05s' }}>
-            <span className="dot" /> Mathematics · Quantitative Finance · ML
+            Mathematics · Quantitative Finance · ML
           </p>
           <h1
             className="hero-title hero-load"
